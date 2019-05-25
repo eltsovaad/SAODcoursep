@@ -16,7 +16,10 @@ public:
 	Patient(string[], int);
 	string getnumber();
 	string getfio();
+	string getadr();
+	string getwp();
 	int getstatus();
+	int getbirth();
 	void setter(string[], int);
 	void set_st(int);
 };

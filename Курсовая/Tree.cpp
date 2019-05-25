@@ -12,11 +12,12 @@ Tree::Tree()
 
 Tree::~Tree()
 {
-	del_all_tree();
+	//del_all_tree();
 }
 
 void Tree::add_tree(tree* prev, string el[])
 {
+	setlocale(LC_ALL, "rus");
 	if (root != nullptr) {
 		tree* temp;
 		temp = new struct tree;
@@ -68,6 +69,7 @@ void Tree::add_list(tree* el)
 }
 
 void Tree::balance(tree* el) {
+	setlocale(LC_ALL, "rus");
 	//tmp - предок добавляемого и удаленного
 	tree* temp = el;
 	int flag = 0;
@@ -294,6 +296,7 @@ void Tree:: high_changer(tree* temp) {
 						temp->height = (temp->left->height) + 1;
 					}
 					else {
+						setlocale(LC_ALL, "rus");
 						cout << "Вы меня сломали :(" << endl;
 					}
 				}
@@ -338,6 +341,7 @@ Tree::list* Tree::sons_finder(int flag) {
 }
 
 Tree::tree* Tree::del_tree(tree* del) {
+	setlocale(LC_ALL, "rus");
 	tree* ret = NULL;
 	if (root != NULL) {
 		if ((del->left == NULL) && (del->right == NULL)) {
@@ -350,6 +354,7 @@ Tree::tree* Tree::del_tree(tree* del) {
 						del->prev->right = NULL;
 					}
 					else {
+
 						cout << "Ошибка распада!" << endl;
 					}
 				}
@@ -446,6 +451,7 @@ Tree::tree* Tree::del_tree(tree* del) {
 }
 
 Tree::tree* Tree::searcher(int flag, string in) {
+	setlocale(LC_ALL, "rus");
 	//flag==0 - обычный поиск, ==1 - с добавлением, 2 - по должности
 	tree* temp, *prev;
 	if (root != NULL) {
@@ -512,7 +518,14 @@ Tree::tree* Tree::searcher(int flag, string in) {
 	return temp;
 }
 
+string* Tree::in_data(int){
+	string *f= NULL;
+	return f;
+}
+void Tree::show_one(tree*){}
+
 void Tree::search() {
+	setlocale(LC_ALL, "rus");
 	int menu = 0;
 	string* s;
 	cout << "Введите вид поиска:" << endl;

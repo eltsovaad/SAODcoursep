@@ -37,8 +37,20 @@ string Patient::getfio() {
 	return fio;
 }
 
+string Patient::getwp() {
+	return workplace;
+}
+
+string Patient::getadr() {
+	return adr;
+}
+
 int Patient::getstatus() {
 	return status;
+}
+
+int Patient::getbirth() {
+	return birth;
 }
 
 void Patient::setter(string data[], int in_birth) {
@@ -53,3 +65,4 @@ void Patient::setter(string data[], int in_birth) {
 void Patient::set_st(int in_st) {
 	status = in_st;
 }
+

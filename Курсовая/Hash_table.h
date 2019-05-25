@@ -5,16 +5,16 @@ class Hash_table
 {
 private:
 	const int N = 50;
-	Patient table[50];
+	Patient* table;
 	int collision(int,string);
 	int collision(int);
-	void in_data(string*,int);
-	void in_data(string, int);
+	void in_data(string*&, int&);//для добавления
+	void in_data(string&, int);//для поиска
 	int hasher(std::string);
 	
 public:
 	void add();
-	Patient search(int);
+	int search(int=1);
 	void del();
 	void show_all();
 	Hash_table();

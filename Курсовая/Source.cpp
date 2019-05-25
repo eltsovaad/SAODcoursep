@@ -35,37 +35,56 @@ int check_menu(int menu, int num) {
 
 string* in_data(int);
 
-void podmenu(int flag, Tree doctors, CircleList dirs, Hash_table hash) {
+void podmenu(int flag, CircleList dirs, Hash_table &hash, Tree docs) {
 	int menu = 0;
 	if (flag != 0) {
 		cout << endl << "Выберете дальнейшее действие:" << endl;
 		cout << "1. Pегистрация нового "; if(flag==1){ cout << "пациента" << endl; }else{ cout << "врача" << endl; }
 		cout << "2. Поиск "; if (flag == 1) { cout << "пациента" << endl; }else { cout << "врача" << endl; }
-		cout << "3. Просмотр всех"; if (flag == 1) { cout << "пациентов" << endl; }else { cout << "врачей" << endl; }
-		cout << "4. Удаление"; if (flag == 1) { cout << "пациента" << endl; }else { cout << "врача" << endl; }
+		cout << "3. Просмотр всех "; if (flag == 1) { cout << "пациентов" << endl; }else { cout << "врачей" << endl; }
+		cout << "4. Удаление "; if (flag == 1) { cout << "пациента" << endl; }else { cout << "врача" << endl; }
 		cout << "Ваш выбор: ";
 		cin >> menu;
 		menu = check_menu(menu, 4);
 		switch (menu) {
 		case 1: {
 			if (flag == 1) {
-				string* a;
-				a=in_data(1);
 				hash.add();
+				break;
 			}
 			else {
-				doctors.add();
+				//doctors.add();
 				break;
 			}
 		}
 		case 2: {
-
+			if (flag == 1) {
+				hash.search();
+			}
+			else {
+				//doctors.search();
+				break;
+			}
 			break;
 		}
 		case 3: {
+			if (flag == 1) {
+				hash.show_all();
+			}
+			else {
+				//doctors.show_all();
+				break;
+			}
 			break;
 		}
 		case 4: {
+			if (flag == 1) {
+				hash.del();
+			}
+			else {
+				//doctors.del();
+				break;
+			}
 			break;
 		}
 		}
@@ -79,10 +98,10 @@ int main() {
 	setlocale(LC_ALL, "rus");
 	int menu = 0;
 	bool flag_break = 0;
-	Tree tree();
-	CircleList dirs();//направления
-	CircleList patients();//пациенты
-	Hash_table hashtable();
+	Tree tree;
+	CircleList dirs;//направления
+	Hash_table hashtable;
+	Tree docs;
 	while (true) {
 		cout << endl << "Выберите категорию:" << endl;
 		cout << "1. Направления" << endl;
@@ -96,11 +115,11 @@ int main() {
 
 		switch (menu) {
 		case 1: {
-
+			
 			break;
 		}
 		case 2: {
-
+			podmenu(1, dirs, hashtable,docs);
 			break;
 		}
 		case 3: {
