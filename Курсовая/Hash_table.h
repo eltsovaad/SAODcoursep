@@ -9,11 +9,12 @@ private:
 	int collision(int,string);
 	int collision(int);
 	void in_data(string*,int);
+	void in_data(string, int);
 	int hasher(std::string);
 	
 public:
 	void add();
-	int* search();
+	Patient search(int);
 	void del();
 	void show_all();
 	Hash_table();

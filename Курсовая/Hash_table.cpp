@@ -39,6 +39,66 @@ void Hash_table::add() {
 	}
 }
 
+Patient Hash_table::search(int notdel=1) {
+	Patient found;
+	string data;
+	int flag = 1;
+	int menu;
+	if(notdel == 1) {
+		cout << "Выберите метод поиска: " << endl;
+		cout << "1. По номеру регистрации" << endl;
+		cout << "2. По фамилии" << endl;
+		cout << "Ваш выбор: ";
+		cin >> menu; 
+	}
+	else {
+		menu == 1;
+	}
+	while (flag) {
+		switch (menu) {
+		case 1: {
+			//поиск по рег номеру
+			in_data(data, 1);
+			int adr = hasher(data);
+			if (adr != -10) {
+				found = table[adr];
+				//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!добавить врачей к которым записан
+			}
+			else {
+				found.set_st(4);
+			}
+			flag = 0;
+			break;
+		}
+		case 2: {
+			//поиск по фио
+			int flag_found = 0;//флаг того, что были найдены фио
+			cout << "Список найденных пациентов: " << endl;
+			in_data(data, 2);
+			for (int i = 0; i < N; i++) {
+				if (data == table[i].getfio()) {
+					flag_found++;
+					string num = table[i].getnumber();
+					cout << num << " " << data << endl;
+				}	
+			}
+			if (flag_found == 0) {
+				cout << "По вашему запросу не было найдено пациентов" << endl;
+			}
+			flag = 0;
+			break;
+		}
+		default: {
+			cin.clear();
+			cin.ignore();
+			cout << "Неверный ввод пункта меню! Повторите: ";
+			cin >> menu;
+		}
+		}
+	}
+	return found;
+}
+
 int Hash_table::hasher(string number) {
 	int a = number[0]+number[1]+number[3]+number[4]+number[5]+number[6] +number[7] + number[8];
 	int b = a;
@@ -67,7 +127,7 @@ int Hash_table:: collision(int adr, string search_num) {
 	int step = 1;
 	while (true) {
 		if (step > N) {
-			cout << "Переполнение таблицы!" << endl;
+			cout << "Пациент не найден!" << endl;
 			adr = -10;
 			break;
 		}

@@ -9,7 +9,7 @@ private:
 	string adr;
 	string workplace;
 	int birth;
-	int status;//0-empty, 1-taken, 2-deleted
+	int status;//0-empty, 1-taken, 2-deleted, 4 - not found 
 public:
 	Patient();
 	~Patient();
