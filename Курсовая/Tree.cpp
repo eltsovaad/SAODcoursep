@@ -15,6 +15,293 @@ Tree::~Tree()
 	//del_all_tree();
 }
 
+void Tree::add() {
+	string data[3];
+	int cab;
+	string* p_data = &data[0];
+	in_data(p_data,cab);
+	tree* prev = NULL;
+	if (root != nullptr) {
+		
+		prev = searcher(1, p_data[0]);
+	}
+	add_tree(prev, data);
+}
+
+void Tree::in_data(string*& data, int& cl) {
+	setlocale(LC_ALL, "rus");
+	locale loc("Russian_Russia.1251");
+	cout << "Введите данные для добавления врача: " << endl;
+	cout << "Введите ФИО: ";
+	cin.ignore(cin.rdbuf()->in_avail());
+	getline(cin,data[0], '\n');
+	while ((cin.fail() )|| (data[0].length>=25)) {
+		cin.clear();
+		cin.ignore(cin.rdbuf()->in_avail());
+		cout << "ФИО не должно превышать 25 символов!" << endl;
+		cout << "Введите ФИО повторно: ";
+		getline(cin, data[0], '\n');
+	}
+	cin.ignore(cin.rdbuf()->in_avail());
+	cout << "Введите должность: ";
+	getline(cin, data[1], '\n');
+	while (cin.fail()) {
+		cin.clear();
+		cin.ignore(cin.rdbuf()->in_avail());
+		cout << "Ошибка! Введите должность повторно: ";
+		getline(cin, data[1], '\n');
+	}
+	cout << "Введите номер кабинета: ";
+	cin >> cl;
+	while (cin.fail()) {
+		cin.clear();
+		cin.ignore(cin.rdbuf()->in_avail());
+		cout << "Ошибка!Введите номер кабинета повторно : ";
+		cin >> cl;
+	}
+	cin.ignore(cin.rdbuf()->in_avail());
+	cout << "Введите график приема: ";
+	getline(cin, data[2], '\n');
+	while (cin.fail()) {
+		cin.clear();
+		cin.ignore(cin.rdbuf()->in_avail());
+		cout << "Ошибка! Введите график приема повторно: ";
+		getline(cin, data[2], '\n');
+	}
+}
+
+void Tree::in_data(string& data, int flag) {
+	setlocale(LC_ALL, "rus");
+	cout << "Введите данные для поиска пациента: " << endl;
+	if (flag == 1) {
+		cin.ignore(cin.rdbuf()->in_avail());
+		getline(cin, data, '\n');
+		while ((cin.fail()) || (data.length >= 25)) {
+			cin.clear();
+			cin.ignore(cin.rdbuf()->in_avail());
+			cout << "ФИО не должно превышать 25 символов!" << endl;
+			cout << "Введите ФИО повторно: ";
+			getline(cin, data, '\n');
+		}
+	}
+	else {
+		cout << "Введите должность: ";
+		getline(cin, data, '\n');
+		while (cin.fail()) {
+			cin.clear();
+			cin.ignore(cin.rdbuf()->in_avail());
+			cout << "Ошибка! Введите должность повторно: ";
+			getline(cin, data, '\n');
+		}
+	}
+}
+
+void Tree::show_one(tree* temp) {
+	cout << "По вашему запросу было обнаружено: " << endl;
+	cout << "ФИО: " << temp->el[0] << endl;
+	cout << "Должность: " << temp->el[1] << endl;
+	cout << "Кабинет номер: " << temp->el[2] << endl;
+	cout << "График приема: " << temp->el[3] << endl;
+	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!добавить пациентов которые записаны
+}
+
+void Tree::search() {
+	setlocale(LC_ALL, "rus");
+	int menu = 0;
+	string s; int cl;
+	cout << "Введите вид поиска:" << endl;
+	cout << "1. По фамилии врача" << endl;
+	cout << "2. По должности" << endl;
+	cout << "Ваш выбор";
+	cin >> menu;
+	switch (menu) {
+	case 1: {
+		in_data(s,1);
+		tree* temp = searcher(0, s);
+		show_one(temp);
+		break;
+	}
+	case 2: {
+		in_data(s,2);
+		
+		break;
+	}
+	}
+}
+
+void Tree:: del() {
+	if (root) {
+		string a;
+		cout << "Введите элемент для удаления: ";
+		in_data(a,1);
+		tree* temp = searcher(0, a);
+		if (temp != NULL) {
+			temp = del_tree(temp);
+			balance(temp);
+		}
+	}
+	else {
+		cout << "Дерево не задано!" << endl;
+	}
+}
+
+void Tree:: del_all_tree() {
+	list* head, *temp, *header;
+	head = sons_finder(0);
+	header = head;
+	if (head != NULL) {
+		temp = head;
+		while (temp->next != NULL) {
+			temp = head->next;
+			delete (head->leaf);
+			head->leaf = NULL;
+			head = temp;
+		}
+		delete (head->leaf);
+		head->leaf = NULL;
+	}
+	del_list();
+}
+
+void Tree:: del_list() {
+	struct list *temp;
+	if (head != NULL) {
+		temp = head;
+		while (temp->next != NULL) {
+			temp = head->next;
+			delete (head);
+			head = temp;
+		}
+		delete (head);
+		head = NULL;
+	}
+}
+
+void Tree::show_all() {
+	head = sons_finder(0);
+	list* tmp = head;
+	cout << "Все зарегистрированные врачи:" << endl;
+	int a = 1;
+	while (tmp != NULL) {
+		cout << a << ". " << tmp->leaf->el[0] << " - " << tmp->leaf->el[1] << endl;
+		a++;
+		tmp = tmp->next;
+	}
+	del_list();
+}
+
+Tree::tree* Tree::del_tree(tree* del) {
+	setlocale(LC_ALL, "rus");
+	tree* ret = NULL;
+	if (root != NULL) {
+		if ((del->left == NULL) && (del->right == NULL)) {
+			if (del->prev != NULL) {
+				if (del->prev->left == del) {
+					del->prev->left = NULL;
+				}
+				else {
+					if (del->prev->right == del) {
+						del->prev->right = NULL;
+					}
+					else {
+
+						cout << "Ошибка распада!" << endl;
+					}
+				}
+			}
+			ret = del->prev;
+		}
+		else {
+			if (del->right != NULL) {
+				tree* leftest = del->right;
+				while (leftest->left) {
+					leftest = leftest->left;
+				}
+				if (leftest->right) {
+					tree* leftest_r_son = leftest->right;
+					leftest->prev->left = leftest_r_son;
+					leftest_r_son->prev = leftest->prev;
+					//leftest_r_son->right = NULL;
+				}
+				if (del->prev) {
+					if (del->prev->left == del) {
+						del->prev->left = leftest;
+					}
+					else {
+						if (del->prev->right == del) {
+							del->prev->right = leftest;
+						}
+						else {
+							cout << "Ошибка распада!" << endl;
+						}
+					}
+				}
+				if (leftest->prev->left == leftest) {
+					leftest->prev->left = NULL;
+				}
+				else {
+					leftest->prev->right = NULL;
+				}
+				leftest->prev = del->prev;
+				leftest->left = del->left;
+				del->left->prev = leftest;
+				leftest->right = del->right;
+				del->right->prev = leftest;
+				ret = leftest;
+			}
+			else {
+				if (del->left != NULL) {
+					tree* rightest = del->left;
+					while (rightest->right) {
+						rightest = rightest->left;
+					}
+					if (rightest->left) {
+						tree* rightest_l_son = rightest->left;
+						rightest->prev->right = rightest_l_son;
+						rightest_l_son->prev = rightest->prev;
+					}
+					if (del->prev->left == del) {
+						del->prev->left = rightest;
+					}
+					else {
+						if (del->prev->right == del) {
+							del->prev->right = rightest;
+						}
+						else {
+							cout << "Ошибка распада!" << endl;
+						}
+					}
+					if (rightest->prev->left == rightest) {
+						rightest->prev->left = NULL;
+					}
+					else {
+						rightest->prev->right = NULL;
+					}
+					rightest->prev = del->prev;
+					rightest->left = del->left;
+					del->right->prev = rightest;
+					rightest->right = del->right;
+					del->right->prev = rightest;
+					ret = rightest;
+				}
+			}
+		}
+		if (del == root) {
+			root = ret;
+			high_changer(root);
+		}
+		delete del;
+		del = NULL;
+	}
+	else {
+		cout << "Дерево не задано!" << endl;
+
+	}
+	return ret;
+}
+
+
+
 void Tree::add_tree(tree* prev, string el[])
 {
 	setlocale(LC_ALL, "rus");
@@ -340,119 +627,11 @@ Tree::list* Tree::sons_finder(int flag) {
 	return head;
 }
 
-Tree::tree* Tree::del_tree(tree* del) {
-	setlocale(LC_ALL, "rus");
-	tree* ret = NULL;
-	if (root != NULL) {
-		if ((del->left == NULL) && (del->right == NULL)) {
-			if (del->prev != NULL) {
-				if (del->prev->left == del) {
-					del->prev->left = NULL;
-				}
-				else {
-					if (del->prev->right == del) {
-						del->prev->right = NULL;
-					}
-					else {
 
-						cout << "Ошибка распада!" << endl;
-					}
-				}
-			}
-			ret = del->prev;
-		}
-		else {
-			if (del->right != NULL) {
-				tree* leftest = del->right;
-				while (leftest->left) {
-					leftest = leftest->left;
-				}
-				if (leftest->right) {
-					tree* leftest_r_son = leftest->right;
-					leftest->prev->left = leftest_r_son;
-					leftest_r_son->prev = leftest->prev;
-					//leftest_r_son->right = NULL;
-				}
-				if (del->prev) {
-					if (del->prev->left == del) {
-						del->prev->left = leftest;
-					}
-					else {
-						if (del->prev->right == del) {
-							del->prev->right = leftest;
-						}
-						else {
-							cout << "Ошибка распада!" << endl;
-						}
-					}
-				}
-				if (leftest->prev->left == leftest) {
-					leftest->prev->left = NULL;
-				}
-				else {
-					leftest->prev->right = NULL;
-				}
-				leftest->prev = del->prev;
-				leftest->left = del->left;
-				del->left->prev = leftest;
-				leftest->right = del->right;
-				del->right->prev = leftest;
-				ret = leftest;
-			}
-			else {
-				if (del->left != NULL) {
-					tree* rightest = del->left;
-					while (rightest->right) {
-						rightest = rightest->left;
-					}
-					if (rightest->left) {
-						tree* rightest_l_son = rightest->left;
-						rightest->prev->right = rightest_l_son;
-						rightest_l_son->prev = rightest->prev;
-					}
-					if (del->prev->left == del) {
-						del->prev->left = rightest;
-					}
-					else {
-						if (del->prev->right == del) {
-							del->prev->right = rightest;
-						}
-						else {
-							cout << "Ошибка распада!" << endl;
-						}
-					}
-					if (rightest->prev->left == rightest) {
-						rightest->prev->left = NULL;
-					}
-					else {
-						rightest->prev->right = NULL;
-					}
-					rightest->prev = del->prev;
-					rightest->left = del->left;
-					del->right->prev = rightest;
-					rightest->right = del->right;
-					del->right->prev = rightest;
-					ret = rightest;
-				}
-			}
-		}
-		if (del == root) {
-			root = ret;
-			high_changer(root);
-		}
-		delete del;
-		del = NULL;
-	}
-	else {
-		cout << "Дерево не задано!" << endl;
-
-	}
-	return ret;
-}
 
 Tree::tree* Tree::searcher(int flag, string in) {
 	setlocale(LC_ALL, "rus");
-	//flag==0 - обычный поиск, ==1 - с добавлением, 2 - по должности
+	//flag==0 - обычный поиск, ==1 - с добавлением
 	tree* temp, *prev;
 	if (root != NULL) {
 		int k = 0;
@@ -513,40 +692,10 @@ Tree::tree* Tree::searcher(int flag, string in) {
 	}
 	else {
 		temp = NULL;
-		cout << "Дерево не задано!" << endl;
+		if (flag != 1) {
+			cout << "Дерево не задано!" << endl;
+		}
 	}
 	return temp;
 }
 
-string* Tree::in_data(int){
-	string *f= NULL;
-	return f;
-}
-void Tree::show_one(tree*){}
-
-void Tree::search() {
-	setlocale(LC_ALL, "rus");
-	int menu = 0;
-	string* s;
-	cout << "Введите вид поиска:" << endl;
-	cout << "1. По фамилии врача" << endl;
-	cout << "2. По должности" << endl;
-	cout << "Ваш выбор";
-	cin >> menu;
-	switch (menu) {
-	case 1: {
-		s = in_data(1);
-		string ser = s[0];
-		tree* temp = searcher(0,ser);
-		show_one(temp);
-		break;
-	}
-	case 2: {
-		s = in_data(1);
-		string ser = s[0];
-		tree* temp = searcher(2, ser);
-		show_one(temp);
-		break;
-	}
-	}
-}

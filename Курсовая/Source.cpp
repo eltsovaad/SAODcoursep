@@ -6,6 +6,7 @@
 #include "CircleList.h"
 #include "Tree.h"
 #include "Hash_table.h"
+#include "Windows.h"
 
 using namespace std;
 
@@ -43,9 +44,10 @@ void podmenu(int flag, CircleList dirs, Hash_table &hash, Tree docs) {
 		cout << "2. Поиск "; if (flag == 1) { cout << "пациента" << endl; }else { cout << "врача" << endl; }
 		cout << "3. Просмотр всех "; if (flag == 1) { cout << "пациентов" << endl; }else { cout << "врачей" << endl; }
 		cout << "4. Удаление "; if (flag == 1) { cout << "пациента" << endl; }else { cout << "врача" << endl; }
+		cout << "5. Удаление всех"; if (flag == 1) { cout << "пациентов" << endl; }else { cout << "врачей" << endl; }
 		cout << "Ваш выбор: ";
 		cin >> menu;
-		menu = check_menu(menu, 4);
+		menu = check_menu(menu, 5);
 		switch (menu) {
 		case 1: {
 			if (flag == 1) {
@@ -87,6 +89,16 @@ void podmenu(int flag, CircleList dirs, Hash_table &hash, Tree docs) {
 			}
 			break;
 		}
+		case 5: {
+			if (flag == 1) {
+				hash.del_all();
+			}
+			else {
+				//doctors.del_all();
+				break;
+			}
+			break;
+		}
 		}
 	}
 	else {
@@ -96,6 +108,8 @@ void podmenu(int flag, CircleList dirs, Hash_table &hash, Tree docs) {
 
 int main() {
 	setlocale(LC_ALL, "rus");
+	SetConsoleCP(1251);
+	SetConsoleOutputCP(1251);
 	int menu = 0;
 	bool flag_break = 0;
 	Tree tree;

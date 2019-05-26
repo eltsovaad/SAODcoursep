@@ -17,6 +17,7 @@ public:
 	int search(int=1);
 	void del();
 	void show_all();
+	void del_all();
 	Hash_table();
 	~Hash_table();
 };

@@ -68,6 +68,15 @@ void Hash_table::in_data(string*&data, int &b) {//добавление
 
 }
 
+void Hash_table::del_all() {
+	for (int i = 0; i < N; i++) {
+		if (table[i].getstatus() == 1) {
+			table[i].set_st(2);
+		}
+	}
+	cout << "Список пациентов очищен!" << endl;
+}
+
 void Hash_table::in_data(string&data, int flag) {//поиск
 	setlocale(LC_ALL, "rus");
 	cout << "Введите данные для поиска пациента: " << endl;
@@ -84,6 +93,7 @@ void Hash_table::in_data(string&data, int flag) {//поиск
 	}
 	else {
 		cout << "Введите ФИО: ";
+		cin.ignore(cin.rdbuf()->in_avail());
 		getline(cin, data, '\n');
 		while (cin.fail()) {
 			cin.clear();
@@ -169,15 +179,20 @@ int Hash_table::search(int notdel) {
 			int flag_found = 0;//флаг того, что были найдены фио
 			cout << "Список найденных пациентов: " << endl;
 			in_data(data, 2);
-			for (int i = 0; i < N; i++) {
-				if (data == table[i].getfio()) {
-					flag_found++;
-					string num = table[i].getnumber();
-					cout << num << " " << data << endl;
-				}	
+			if (data != "") {
+				for (int i = 0; i < N; i++) {
+					if (data == table[i].getfio()) {
+						flag_found++;
+						string num = table[i].getnumber();
+						cout << num << " " << data << endl;
+					}
+				}
+				if (flag_found == 0) {
+					cout << "По вашему запросу не было найдено пациентов" << endl;
+				}
 			}
-			if (flag_found == 0) {
-				cout << "По вашему запросу не было найдено пациентов" << endl;
+			else {
+				cout << "Был задан пустой поисковый запрос!" << endl;
 			}
 			flag = 0;
 			break;

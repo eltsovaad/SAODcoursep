@@ -27,18 +27,21 @@ private:
 	tree *searcher(int flag, string in);
 	void balance(tree* el);
 	tree* del_tree(tree* del);
-	void del_all_tree();
-	void del_list(list* head);
+	void del_list();
 	list* sons_finder(int flag);
 	void high_changer( tree* temp);
 	int get_height(tree*el);
-	string* in_data(int);//флаг=0 при всех полях, 1-фио, 2 - должность
+	void in_data(string&, int);//флаг= 1-фио, 2 - должность
+	void in_data(string*&, int&);//add
 	void show_one(tree*);
+
 public:
 	Tree();
 	~Tree();
 	void add();
 	void search();
-
+	void del();
+	void show_all();
+	void del_all_tree();
 };
 
