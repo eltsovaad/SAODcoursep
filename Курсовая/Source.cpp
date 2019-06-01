@@ -34,9 +34,7 @@ int check_menu(int menu, int num) {
 	return menu;
 }
 
-string* in_data(int);
-
-void podmenu(int flag, CircleList dirs, Hash_table &hash, Tree docs) {
+void podmenu(int flag, CircleList &dirs, Hash_table &hash, Tree &doctors) {
 	int menu = 0;
 	if (flag != 0) {
 		cout << endl << "Выберете дальнейшее действие:" << endl;
@@ -44,7 +42,7 @@ void podmenu(int flag, CircleList dirs, Hash_table &hash, Tree docs) {
 		cout << "2. Поиск "; if (flag == 1) { cout << "пациента" << endl; }else { cout << "врача" << endl; }
 		cout << "3. Просмотр всех "; if (flag == 1) { cout << "пациентов" << endl; }else { cout << "врачей" << endl; }
 		cout << "4. Удаление "; if (flag == 1) { cout << "пациента" << endl; }else { cout << "врача" << endl; }
-		cout << "5. Удаление всех"; if (flag == 1) { cout << "пациентов" << endl; }else { cout << "врачей" << endl; }
+		cout << "5. Удаление всех "; if (flag == 1) { cout << "пациентов" << endl; }else { cout << "врачей" << endl; }
 		cout << "Ваш выбор: ";
 		cin >> menu;
 		menu = check_menu(menu, 5);
@@ -55,16 +53,16 @@ void podmenu(int flag, CircleList dirs, Hash_table &hash, Tree docs) {
 				break;
 			}
 			else {
-				//doctors.add();
+				doctors.add();
 				break;
 			}
 		}
 		case 2: {
 			if (flag == 1) {
-				hash.search();
+				hash.search(dirs);
 			}
 			else {
-				//doctors.search();
+				doctors.search(dirs);
 				break;
 			}
 			break;
@@ -74,17 +72,17 @@ void podmenu(int flag, CircleList dirs, Hash_table &hash, Tree docs) {
 				hash.show_all();
 			}
 			else {
-				//doctors.show_all();
+				doctors.show_all();
 				break;
 			}
 			break;
 		}
 		case 4: {
 			if (flag == 1) {
-				hash.del();
+				hash.del(dirs);
 			}
 			else {
-				//doctors.del();
+				doctors.del();
 				break;
 			}
 			break;
@@ -94,7 +92,7 @@ void podmenu(int flag, CircleList dirs, Hash_table &hash, Tree docs) {
 				hash.del_all();
 			}
 			else {
-				//doctors.del_all();
+				doctors.del_all();
 				break;
 			}
 			break;
@@ -117,7 +115,7 @@ int main() {
 	Hash_table hashtable;
 	Tree docs;
 	while (true) {
-		cout << endl << "Выберите категорию:" << endl;
+		cout <<  "Выберите категорию:" << endl;
 		cout << "1. Направления" << endl;
 		cout << "2. Пациенты" << endl;
 		cout << "3. Врачи" << endl;
@@ -129,7 +127,31 @@ int main() {
 
 		switch (menu) {
 		case 1: {
-			
+			int p_menu = 0;
+			string fio;
+			string number;
+			string data[4];
+			cout << "Выберите дальнейшее действие: " << endl;
+			cout << "1. Новое направление" << endl;
+			cout << "2. Возврат направления" << endl;
+			cout << "Ваш выбор: ";
+			cin >> p_menu;
+			p_menu = check_menu(p_menu, 2);
+			if (p_menu == 1) {
+				fio = docs.search(dirs,1);
+				if (fio != "") {
+					number = hashtable.search_list();
+					if (number != "") {
+						data[0] = number;
+						data[1] = fio;
+						cout << "Введите дату приема: " << endl;
+						cin >> data[2];
+						cout << "Введите время приема: " << endl;
+						cin >> data[3];
+						dirs.add(data);
+					}
+				}
+			}
 			break;
 		}
 		case 2: {
@@ -137,7 +159,7 @@ int main() {
 			break;
 		}
 		case 3: {
-
+			podmenu(2, dirs, hashtable, docs);
 			break;
 		}
 		case 4: {

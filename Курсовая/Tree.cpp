@@ -2,40 +2,51 @@
 #include<iostream>
 #include<string>
 #include <algorithm>
+#include"CircleList.h"
 
 
 Tree::Tree()
 {
-	root = nullptr;
+	root = NULL;
 }
 
 
 Tree::~Tree()
 {
-	//del_all_tree();
+	del_all();
 }
 
 void Tree::add() {
-	string data[3];
-	int cab;
+	string data[4];
 	string* p_data = &data[0];
-	in_data(p_data,cab);
+	in_data(p_data);
 	tree* prev = NULL;
-	if (root != nullptr) {
+	tree* temp = NULL;
+	if (root != NULL) {
 		
 		prev = searcher(1, p_data[0]);
+		if (prev != NULL) {
+			temp=add_tree(prev, data);
+			high_changer(temp);
+			balance(temp);
+		}
 	}
-	add_tree(prev, data);
+	else {
+		temp=add_tree(prev, data);
+		high_changer(temp);
+		balance(temp);
+	}
+	
 }
 
-void Tree::in_data(string*& data, int& cl) {
+void Tree::in_data(string*& data) {
 	setlocale(LC_ALL, "rus");
 	locale loc("Russian_Russia.1251");
 	cout << "Введите данные для добавления врача: " << endl;
 	cout << "Введите ФИО: ";
 	cin.ignore(cin.rdbuf()->in_avail());
 	getline(cin,data[0], '\n');
-	while ((cin.fail() )|| (data[0].length>=25)) {
+	while ((cin.fail() )|| (data[0].length()>=25)) {
 		cin.clear();
 		cin.ignore(cin.rdbuf()->in_avail());
 		cout << "ФИО не должно превышать 25 символов!" << endl;
@@ -45,38 +56,99 @@ void Tree::in_data(string*& data, int& cl) {
 	cin.ignore(cin.rdbuf()->in_avail());
 	cout << "Введите должность: ";
 	getline(cin, data[1], '\n');
-	while (cin.fail()) {
+	while (cin.fail()||(data[0].length() >= 25)) {
 		cin.clear();
 		cin.ignore(cin.rdbuf()->in_avail());
-		cout << "Ошибка! Введите должность повторно: ";
+		cout << "Должность не должна превышать 25 символов! Введите повторно: ";
 		getline(cin, data[1], '\n');
 	}
-	cout << "Введите номер кабинета: ";
-	cin >> cl;
-	while (cin.fail()) {
-		cin.clear();
-		cin.ignore(cin.rdbuf()->in_avail());
-		cout << "Ошибка!Введите номер кабинета повторно : ";
-		cin >> cl;
-	}
 	cin.ignore(cin.rdbuf()->in_avail());
-	cout << "Введите график приема: ";
+	cout << "Введите номер кабинета: ";
 	getline(cin, data[2], '\n');
 	while (cin.fail()) {
 		cin.clear();
 		cin.ignore(cin.rdbuf()->in_avail());
-		cout << "Ошибка! Введите график приема повторно: ";
+		cout << "Ошибка!Введите номер кабинета повторно : ";
 		getline(cin, data[2], '\n');
 	}
+	cin.ignore(cin.rdbuf()->in_avail());
+	cout << "Введите график приема: ";
+	getline(cin, data[3], '\n');
+	while (cin.fail()) {
+		cin.clear();
+		cin.ignore(cin.rdbuf()->in_avail());
+		cout << "Ошибка! Введите график приема повторно: ";
+		getline(cin, data[3], '\n');
+	}
+}
+
+void Tree::search_in_text(string sear) {
+	head = sons_finder(0);
+	list* tmp = head;
+	int flag = 0;
+	while (tmp != NULL) {
+		/*for (int i = 0; i < tmp->leaf->el[1].length(); i++) {
+			for (int j = 0; (i + j) < min(sear.length(), tmp->leaf->el[1].length()); j++) {
+				if (tmp->leaf->el[1][j + i] == sear[j]) {
+					flag++;
+				}
+			}
+			if (flag == sear.length()) {
+				flag = 1;
+				break;
+			}
+			else {
+				flag = 0;
+			}
+		}
+		if (flag == 1) {
+			cout<<tmp->leaf->el[0] << " - " << tmp->leaf->el[1] << endl;
+			flag = 0;
+		}
+		tmp = tmp->next;*/
+		int b = 0;
+		for (int i = 0; i < tmp->leaf->el[1].length(); i++) {
+			for (int j = 0; j < sear.length(); j++) {
+				if (tmp->leaf->el[1][i] == sear[j]) {
+					flag++;
+					if (b == 0) {
+						b = i;
+					}
+					i++;
+				}
+				else {
+					flag = 0;
+					break;
+				}
+			}
+			if (flag == sear.length()) {
+				i = b;
+				b = 0;
+				flag = 1;
+				break;
+			}
+			else {
+				flag = 0;
+			}
+		}
+		if (flag == 1) {
+			cout << tmp->leaf->el[0] << " - " << tmp->leaf->el[1] << endl;
+			flag = 0;
+		}
+		tmp = tmp->next;
+	}
+
+	del_list();
 }
 
 void Tree::in_data(string& data, int flag) {
 	setlocale(LC_ALL, "rus");
-	cout << "Введите данные для поиска пациента: " << endl;
+	cout << "Введите данные для поиска врача: " << endl;
 	if (flag == 1) {
+		cout << "Введите ФИО: ";
 		cin.ignore(cin.rdbuf()->in_avail());
 		getline(cin, data, '\n');
-		while ((cin.fail()) || (data.length >= 25)) {
+		while ((cin.fail()) || (data.length() >= 25)) {
 			cin.clear();
 			cin.ignore(cin.rdbuf()->in_avail());
 			cout << "ФИО не должно превышать 25 символов!" << endl;
@@ -86,6 +158,7 @@ void Tree::in_data(string& data, int flag) {
 	}
 	else {
 		cout << "Введите должность: ";
+		cin.ignore(cin.rdbuf()->in_avail());
 		getline(cin, data, '\n');
 		while (cin.fail()) {
 			cin.clear();
@@ -102,42 +175,59 @@ void Tree::show_one(tree* temp) {
 	cout << "Должность: " << temp->el[1] << endl;
 	cout << "Кабинет номер: " << temp->el[2] << endl;
 	cout << "График приема: " << temp->el[3] << endl;
-	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!добавить пациентов которые записаны
 }
 
-void Tree::search() {
-	setlocale(LC_ALL, "rus");
-	int menu = 0;
-	string s; int cl;
-	cout << "Введите вид поиска:" << endl;
-	cout << "1. По фамилии врача" << endl;
-	cout << "2. По должности" << endl;
-	cout << "Ваш выбор";
-	cin >> menu;
-	switch (menu) {
-	case 1: {
-		in_data(s,1);
-		tree* temp = searcher(0, s);
-		show_one(temp);
-		break;
+string Tree::search(CircleList dirs, int flag) {
+	if (root != NULL) {
+		setlocale(LC_ALL, "rus");
+		int menu = 0;
+		string s;
+		if (flag == 0) {
+			cout << "Введите вид поиска:" << endl;
+			cout << "1. По фамилии врача" << endl;
+			cout << "2. По должности" << endl;
+			cout << "Ваш выбор: ";
+			cin >> menu;
+		}
+		else {
+			menu = 1;
+		}
+		switch (menu) {
+		case 1: {
+			in_data(s, 1);
+			tree* temp = searcher(0, s);
+			if (flag == 0) {
+				show_one(temp);
+				dirs.view_pat(temp->el[0]);
+			}
+			else {
+				return temp->el[0];
+			}
+			break;
+		}
+		case 2: {
+			in_data(s, 2);
+			search_in_text(s);
+			break;
+		}
+		}
 	}
-	case 2: {
-		in_data(s,2);
-		
-		break;
+	else {
+		cout << "Нет добавленных врачей!" << endl;
 	}
-	}
+	return "";
 }
 
 void Tree:: del() {
 	if (root) {
 		string a;
-		cout << "Введите элемент для удаления: ";
+		cout << "Введите элемент для удаления: "<<endl;
 		in_data(a,1);
 		tree* temp = searcher(0, a);
 		if (temp != NULL) {
 			temp = del_tree(temp);
 			balance(temp);
+			cout << "Удаление произошло успешно!" << endl;
 		}
 	}
 	else {
@@ -145,22 +235,28 @@ void Tree:: del() {
 	}
 }
 
-void Tree:: del_all_tree() {
-	list* head, *temp, *header;
-	head = sons_finder(0);
-	header = head;
-	if (head != NULL) {
-		temp = head;
-		while (temp->next != NULL) {
-			temp = head->next;
+void Tree:: del_all() {
+	if (root) {
+		list* head, *temp, *header;
+		head = sons_finder(0);
+		header = head;
+		if (head != NULL) {
+			temp = head;
+			while (temp->next != NULL) {
+				temp = head->next;
+				delete (head->leaf);
+				head->leaf = NULL;
+				head = temp;
+			}
 			delete (head->leaf);
 			head->leaf = NULL;
-			head = temp;
 		}
-		delete (head->leaf);
-		head->leaf = NULL;
+		del_list();
+		root = NULL;
 	}
-	del_list();
+	else {
+		cout << "Нет добавленных врачей!" << endl;
+	}
 }
 
 void Tree:: del_list() {
@@ -178,16 +274,21 @@ void Tree:: del_list() {
 }
 
 void Tree::show_all() {
-	head = sons_finder(0);
-	list* tmp = head;
-	cout << "Все зарегистрированные врачи:" << endl;
-	int a = 1;
-	while (tmp != NULL) {
-		cout << a << ". " << tmp->leaf->el[0] << " - " << tmp->leaf->el[1] << endl;
-		a++;
-		tmp = tmp->next;
+	if (root) {
+		head = sons_finder(0);
+		list* tmp = head;
+		cout << "Все зарегистрированные врачи:" << endl;
+		int a = 1;
+		while (tmp != NULL) {
+			cout << a << ". " << tmp->leaf->el[0] << " - " << tmp->leaf->el[1] << endl;
+			a++;
+			tmp = tmp->next;
+		}
+		del_list();
 	}
-	del_list();
+	else {
+		cout << "Нет врачей!" << endl;
+	}
 }
 
 Tree::tree* Tree::del_tree(tree* del) {
@@ -212,7 +313,7 @@ Tree::tree* Tree::del_tree(tree* del) {
 			ret = del->prev;
 		}
 		else {
-			if (del->right != NULL) {
+			if (del->right != nullptr){
 				tree* leftest = del->right;
 				while (leftest->left) {
 					leftest = leftest->left;
@@ -236,21 +337,24 @@ Tree::tree* Tree::del_tree(tree* del) {
 						}
 					}
 				}
-				if (leftest->prev->left == leftest) {
-					leftest->prev->left = NULL;
-				}
-				else {
-					leftest->prev->right = NULL;
-				}
+					if (leftest->prev->left == leftest) {
+						leftest->prev->left = NULL;
+					}
+					else {
+
+						leftest->prev->right = NULL;
+					}
 				leftest->prev = del->prev;
 				leftest->left = del->left;
 				del->left->prev = leftest;
 				leftest->right = del->right;
-				del->right->prev = leftest;
+				//if (leftest != del) {
+					del->right->prev = leftest;
+				//}
 				ret = leftest;
 			}
 			else {
-				if (del->left != NULL) {
+				if ((del->left != NULL)||(del->left != nullptr)) {
 					tree* rightest = del->left;
 					while (rightest->right) {
 						rightest = rightest->left;
@@ -302,11 +406,11 @@ Tree::tree* Tree::del_tree(tree* del) {
 
 
 
-void Tree::add_tree(tree* prev, string el[])
+Tree::tree* Tree::add_tree(tree* prev, string el[])
 {
+	tree* temp;
 	setlocale(LC_ALL, "rus");
-	if (root != nullptr) {
-		tree* temp;
+	if (root != NULL) {
 		temp = new struct tree;
 		temp->prev = prev;
 		temp->left = NULL;
@@ -331,13 +435,15 @@ void Tree::add_tree(tree* prev, string el[])
 		for (int i = 0; i < 4; i++) {
 			root->el[i] = el[i];
 		}
+		temp = root;
 	}
 	cout << "Информация о враче успешно добавлена! " << endl;
+	return temp;
 }
 
 void Tree::add_list(tree* el)
 {
-	if (head != nullptr) {
+	if (head != NULL) {
 		struct list *temp;
 		temp = new struct list;
 		list* last = head;

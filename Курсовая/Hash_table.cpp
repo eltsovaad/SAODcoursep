@@ -2,6 +2,7 @@
 #include "Patient.h"
 #include<string>
 #include<iostream>
+#include"CircleList.h"
 using namespace std;
 
 
@@ -9,6 +10,7 @@ using namespace std;
 Hash_table::Hash_table()
 {
 	table = new Patient[50];
+	count = 0;
 }
 
 
@@ -88,7 +90,7 @@ void Hash_table::in_data(string&data, int flag) {//поиск
 			cin.ignore(cin.rdbuf()->in_avail());
 			cout << "Регистрационный номер – строка формата «MM-NNNNNN»" << endl;
 			cout << "Введите номер повторно: ";
-			cin >> data[0];
+			cin >> data;
 		}
 	}
 	else {
@@ -118,6 +120,7 @@ void Hash_table::add() {
 		table[adr].set_st(1);
 		cout << "Пациент успешно добавлен! " << endl;
 		cout << endl;
+		count++;
 	}
 	else {
 		adr = collision(adr);
@@ -125,87 +128,127 @@ void Hash_table::add() {
 			table[adr] = temp;
 			cout << "Пациент успешно добавлен! " << endl;
 			cout << endl;
+			count++;
 		}
 	}
 }
 
-int Hash_table::search(int notdel) {
-	setlocale(LC_ALL, "rus");
-	Patient found;
-	string data;
-	int flag = 1;
-	int menu;
-	int adr = -1;
-	if(notdel == 1) {
-		cout << "Выберите метод поиска: " << endl;
-		cout << "1. По номеру регистрации" << endl;
-		cout << "2. По фамилии" << endl;
-		cout << "Ваш выбор: ";
-		cin >> menu; 
-	}
-	else {
-		menu = 1;
-	}
-	while (flag) {
-		switch (menu) {
-		case 1: {
-			//поиск по рег номеру
-			in_data(data, 1);
-			adr = hasher(data);
-			if (table[adr].getstatus()==1) {
-				found = table[adr];
-			}
-			else {
-				adr = collision(adr, data);
-				found = table[adr];
-				if (adr == -10) {
-					found.set_st(4);
-				}
-			}
-			if ((adr != -10)) {
-				cout << "По вашему запросу было обнаружено: " << endl;
-				cout << "№ " << found.getnumber() << endl;
-				cout << "ФИО: " << found.getfio() << endl;
-				cout << "Год рождения: " << found.getbirth() << endl;
-				cout << "Адрес: " << found.getadr() << endl;
-				cout << "Место работы(учебы): " << found.getwp() << endl;
-				//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!добавить врачей к которым записан
-			}
-			flag = 0;
-			break;
-		}
-		case 2: {
-			//поиск по фио
-			int flag_found = 0;//флаг того, что были найдены фио
-			cout << "Список найденных пациентов: " << endl;
-			in_data(data, 2);
-			if (data != "") {
-				for (int i = 0; i < N; i++) {
-					if (data == table[i].getfio()) {
-						flag_found++;
-						string num = table[i].getnumber();
-						cout << num << " " << data << endl;
-					}
-				}
-				if (flag_found == 0) {
-					cout << "По вашему запросу не было найдено пациентов" << endl;
-				}
-			}
-			else {
-				cout << "Был задан пустой поисковый запрос!" << endl;
-			}
-			flag = 0;
-			break;
-		}
-		default: {
-			cin.clear();
-			cin.ignore();
-			cout << "Неверный ввод пункта меню! Повторите: ";
+int Hash_table::search(CircleList dirs, int notdel) {
+	int adr = -10;
+	if (count > 0) {
+		setlocale(LC_ALL, "rus");
+		Patient found;
+		string data;
+		int flag = 1;
+		int menu;
+		adr = -1;
+		if (notdel == 1) {
+			cout << "Выберите метод поиска: " << endl;
+			cout << "1. По номеру регистрации" << endl;
+			cout << "2. По фамилии" << endl;
+			cout << "Ваш выбор: ";
 			cin >> menu;
 		}
+		else {
+			menu = 1;
+		}
+		while (flag) {
+			switch (menu) {
+			case 1: {
+				//поиск по рег номеру
+				in_data(data, 1);
+				adr = hasher(data);
+				if (table[adr].getstatus() == 1) {
+					found = table[adr];
+				}
+				else {
+					adr = collision(adr, data);
+					found = table[adr];
+					if (adr == -10) {
+						found.set_st(4);
+					}
+				}
+				if ((adr != -10)) {
+					cout << "По вашему запросу было обнаружено: " << endl;
+					cout << "№ " << found.getnumber() << endl;
+					cout << "ФИО: " << found.getfio() << endl;
+					cout << "Год рождения: " << found.getbirth() << endl;
+					cout << "Адрес: " << found.getadr() << endl;
+					cout << "Место работы(учебы): " << found.getwp() << endl;
+					//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!добавить врачей к которым 
+					dirs.view_doc(data);
+				}
+				flag = 0;
+				break;
+			}
+			case 2: {
+				//поиск по фио
+				int flag_found = 0;//флаг того, что были найдены фио
+				cout << "Список найденных пациентов: " << endl;
+				in_data(data, 2);
+				if (data != "") {
+					for (int i = 0; i < N; i++) {
+						if (data == table[i].getfio()) {
+							flag_found++;
+							string num = table[i].getnumber();
+							cout << num << " " << data << endl;
+						}
+					}
+					if (flag_found == 0) {
+						cout << "По вашему запросу не было найдено пациентов" << endl;
+					}
+				}
+				else {
+					cout << "Был задан пустой поисковый запрос!" << endl;
+				}
+				flag = 0;
+				break;
+			}
+			default: {
+				cin.clear();
+				cin.ignore();
+				cout << "Неверный ввод пункта меню! Повторите: ";
+				cin >> menu;
+			}
+			}
 		}
 	}
+	else {
+		cout << "Нет добавленных пациентов!" << endl;
+	}
 	return adr;
+}
+
+string Hash_table::search_list() {
+	if (count > 0) {
+		setlocale(LC_ALL, "rus");
+		Patient found;
+		string data;
+		int flag = 1;
+		int adr = -1;
+		in_data(data, 1);
+		adr = hasher(data);
+		if (table[adr].getstatus() == 1) {
+			found = table[adr];
+		}
+		else {
+			adr = collision(adr, data);
+			found = table[adr];
+			if (adr == -10) {
+				found.set_st(4);
+			}
+		}
+		if ((adr == -10)) {
+			return "";
+		}
+		else {
+			return found.getadr();
+		}
+	}
+	else {
+		cout << "Нет пациентов!" << endl;
+		return"";
+	}
 }
 
 int Hash_table::hasher(string number) {
@@ -274,34 +317,40 @@ int Hash_table::collision(int adr) {
 	return adr;
 }
 
-void Hash_table::del() {
+void Hash_table::del(CircleList dirs) {
 	setlocale(LC_ALL, "rus");
-	Patient* del;
 	int adr;
-	adr=search(0);
-	if (table[adr].getstatus() != 4) {
-		int menu;
-		cout << "Вы уверены, что хотите удалить выбранного пациента?" << endl;
-		cout << "1- Да. 2- Нет. Ваш выбор: ";
-		cin >> menu;
-		if (menu == 1) {
-			table[adr].set_st(2);
-			cout << "Удаление произошло успешно!"<<endl;
+	adr=search(dirs,0);
+	if (adr != -10) {
+		if (table[adr].getstatus() != 4) {
+			int menu;
+			cout << "Вы уверены, что хотите удалить выбранного пациента?" << endl;
+			cout << "1- Да. 2- Нет. Ваш выбор: ";
+			cin >> menu;
+			if (menu == 1) {
+				table[adr].set_st(2);
+				cout << "Удаление произошло успешно!" << endl;
+			}
 		}
 	}
 }
 
 void  Hash_table::show_all() {
-	setlocale(LC_ALL, "rus");
-	cout << "Список найденных пациентов: " << endl;
-	int k = 0;
-	for (int i = 0; i < N; i++) {
-		if (table[i].getstatus() == 1) {
-			cout << table[i].getnumber() << " " << table[i].getfio() << endl;
-			k++;
+	if (count > 0) {
+		setlocale(LC_ALL, "rus");
+		cout << "Список найденных пациентов: " << endl;
+		int k = 0;
+		for (int i = 0; i < N; i++) {
+			if (table[i].getstatus() == 1) {
+				cout << table[i].getnumber() << " " << table[i].getfio() << endl;
+				k++;
+			}
+		}
+		if (k == 0) {
+			cout << "Пациенты не найдены!" << endl;
 		}
 	}
-	if (k == 0) {
+	else {
 		cout << "Пациенты не найдены!" << endl;
 	}
 }

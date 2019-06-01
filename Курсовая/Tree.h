@@ -1,5 +1,6 @@
 #pragma once
 #include<string>
+#include"CircleList.h"
 using namespace std;
 class Tree
 {
@@ -22,7 +23,7 @@ private:
 	tree* root;
 	list* head;
 
-	void add_tree(tree*, string[]);
+	tree* add_tree(tree*, string[]);
 	void add_list(tree*);
 	tree *searcher(int flag, string in);
 	void balance(tree* el);
@@ -32,16 +33,17 @@ private:
 	void high_changer( tree* temp);
 	int get_height(tree*el);
 	void in_data(string&, int);//флаг= 1-фио, 2 - должность
-	void in_data(string*&, int&);//add
+	void in_data(string*&);//add
 	void show_one(tree*);
+	void search_in_text(string);
 
 public:
 	Tree();
 	~Tree();
 	void add();
-	void search();
+	string search(CircleList,int=0);
 	void del();
 	void show_all();
-	void del_all_tree();
+	void del_all();
 };
 

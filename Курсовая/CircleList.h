@@ -13,17 +13,16 @@ private:
 		struct order* next;//указатель на следующий элемент
 		struct order* prev;
 	};
-
-
-
+	void sort();
 	order* head;
 	int n;
+
 public:
-	void add(string[], bool);
-	void search();
-	void del(string);
+	void add(string[]);
+	void del(string,string);
+	void view_doc(string);
+	void view_pat(string);
 	CircleList();
-	CircleList( string[], bool);
 	~CircleList();
 };
 
