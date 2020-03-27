@@ -41,7 +41,7 @@ public:
 	Tree();
 	~Tree();
 	void add();
-	string search(CircleList,int=0);
+	string search(CircleList&,int=0);
 	void del();
 	void show_all();
 	void del_all();

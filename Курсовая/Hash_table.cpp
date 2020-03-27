@@ -242,7 +242,7 @@ string Hash_table::search_list() {
 			return "";
 		}
 		else {
-			return found.getadr();
+			return found.getnumber();
 		}
 	}
 	else {

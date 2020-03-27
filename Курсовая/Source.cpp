@@ -152,6 +152,16 @@ int main() {
 					}
 				}
 			}
+			else {
+				string doc = "";
+				string pat = "";
+				cout << "Введите фамилию врача: " << endl;
+				cin >> doc;
+				cout << "Введите регистрационный номер пациента: " << endl;
+				cin >> pat;
+				dirs.del(pat, doc);
+				cout << "Удаление произошло успешно!" << endl;
+			}
 			break;
 		}
 		case 2: {

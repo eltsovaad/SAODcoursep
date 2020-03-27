@@ -177,7 +177,7 @@ void Tree::show_one(tree* temp) {
 	cout << "График приема: " << temp->el[3] << endl;
 }
 
-string Tree::search(CircleList dirs, int flag) {
+string Tree::search(CircleList& dirs, int flag) {
 	if (root != NULL) {
 		setlocale(LC_ALL, "rus");
 		int menu = 0;
